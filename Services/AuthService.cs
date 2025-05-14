@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JwtAuthApi.Models;
 
 namespace JwtAuthApi.Services
 {
@@ -27,8 +28,8 @@ namespace JwtAuthApi.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Name, user.Username!),
+                new Claim(ClaimTypes.Role, user.Rolename!)
             };
 
             var jwtKey = _config["Jwt:Key"] ?? throw new Exception("Jwt:Key is missing");

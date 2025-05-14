@@ -4,12 +4,18 @@ using JwtAuthApi.Repositories;
 using JwtAuthApi.Services;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
+using JwtAuthApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-    var config = builder.Configuration;
+var conn = builder.Configuration.GetConnectionString("EnterpriseConnection");
+var config = builder.Configuration;
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(opts => opts.UseSqlServer(conn));
+
 builder.Services.AddCors();
 builder.Services.AddAuthentication(Options => 
 {
@@ -57,7 +63,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });builder.Services.AddScoped<IUserRepository, JwtAuthApi.Repositories.UserRepository>();
 builder.Services.AddScoped<IAuthService, JwtAuthApi.Services.AuthService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddJsonOptions(options => {options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

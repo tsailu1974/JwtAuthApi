@@ -1,9 +1,10 @@
+using JwtAuthApi.DTOs;
 using JwtAuthApi.Models;
 
 namespace JwtAuthApi.Repositories
 {
     public interface IUserRepository
     {
-        User? GetUser(string username, string password);
+        UserDto? GetUser(string username, string password);
     }
 }
