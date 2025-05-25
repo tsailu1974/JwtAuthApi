@@ -5,19 +5,11 @@ using System.Collections.Generic;
 
 namespace JwtAuthApi.Models;
 
-public partial class User
+public partial class Role
 {
-    public int UserID { get; set; }
+    public int RoleID { get; set; }
 
-    public string UserName { get; set; }
-
-    public byte[] PasswordHash { get; set; }
-
-    public bool? IsActive { get; set; }
-
-    public string Email { get; set; }
-
-    public DateOnly? CreatedDate { get; set; }
+    public string RoleName { get; set; }
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

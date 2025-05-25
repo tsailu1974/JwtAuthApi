@@ -1,2 +1,8 @@
 /obj
 /bin
+# VS workspace cache
+**/.vs/
+
+# User-specific project settings
+*.*.user
+

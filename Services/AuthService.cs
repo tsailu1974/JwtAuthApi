@@ -26,12 +26,14 @@ namespace JwtAuthApi.Services
 
             if ( user == null ) return null;
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username!),
-                new Claim(ClaimTypes.Role, user.Rolename!)
+                new Claim(ClaimTypes.Name, user.Username!)
             };
-
+            foreach (var role in user.RoleNames)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             var jwtKey = _config["Jwt:Key"] ?? throw new Exception("Jwt:Key is missing");
             var jwtIssuer = _config["Jwt:Issuer"] ?? throw new Exception("Jwt:Issuer is missing");
             var jwtAudience = _config["Jwt:Audience"] ?? throw new Exception("Jwt:Audience is missing");

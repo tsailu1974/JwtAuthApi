@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using JwtAuthApi.Data;
 using JwtAuthApi.DTOs;
 using JwtAuthApi.Models;
 
@@ -10,9 +9,9 @@ namespace JwtAuthApi.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly AppDbContext _db;
+        private readonly EnterpriseContext _db;
 
-        public UserRepository(AppDbContext db)
+        public UserRepository(EnterpriseContext db)
         {
             _db = db;
         }
@@ -33,13 +32,16 @@ namespace JwtAuthApi.Repositories
                 return null;
 
             // 3) Fetch role names via explicit join
-
+            var roleNames = _db.UserRoles
+                            .Where(ur => ur.UserID == user.UserID)
+                            .Select(ur => ur.Role.RoleName)
+                            .ToList();
 
             // 4) Return only what the DTO needs
             return new UserDto
             {
                 Username = user.UserName!,
-                Rolename   = user.RoleName!
+                RoleNames = roleNames    
             };
         }
     }
