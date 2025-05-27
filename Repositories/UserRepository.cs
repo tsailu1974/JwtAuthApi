@@ -4,41 +4,48 @@ using System.Security.Cryptography;
 using System.Text;
 using JwtAuthApi.DTOs;
 using JwtAuthApi.Models;
+using JwtAuthApi.Services;
 
 namespace JwtAuthApi.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly EnterpriseContext _db;
+        private readonly ILogger<AuthService> _logger;
 
-        public UserRepository(EnterpriseContext db)
+
+        public UserRepository(EnterpriseContext db, ILogger<AuthService> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public UserDto? GetUser(string username, string password)
         {
             // 1) Load the user row for hash checking
-            Console.WriteLine($"GetUser called for: {username}");
+            _logger.LogInformation($"GetUser called for: {username}");
+
             var user = _db.Users
                           .FirstOrDefault(u => u.UserName == username);
 
             if (user == null)
             {
-                Console.WriteLine("User not found in database");
+                _logger.LogWarning("User not found in database");
                 return null;
             }
-               
+
+            _logger.LogInformation($"User found: {user.UserName}");
 
             // 2) Verify password SHA‑256 hash
             using var sha = SHA256.Create();
             var passwordHash = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
-            Console.WriteLine($"Computed hash: {Convert.ToBase64String(passwordHash)}");
-            Console.WriteLine($"Database hash: {Convert.ToBase64String(user.PasswordHash)}");
+
+            _logger.LogInformation($"Computed hash: {Convert.ToBase64String(passwordHash)}");
+            _logger.LogInformation($"Database hash: {Convert.ToBase64String(user.PasswordHash)}");
 
             if (!passwordHash.SequenceEqual(user.PasswordHash!))
             {
-                Console.WriteLine("Password hash mismatch");
+                _logger.LogWarning("Password hash mismatch");
                 return null;
             }
 
