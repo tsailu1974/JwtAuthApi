@@ -23,8 +23,16 @@ public partial class EnterpriseContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Enterprise;Integrated Security=True;TrustServerCertificate=True;");
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Enterprise;Integrated Security=True;TrustServerCertificate=True;");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Enterprise;Integrated Security=True;TrustServerCertificate=True;");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
