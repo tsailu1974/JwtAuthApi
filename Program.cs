@@ -7,14 +7,28 @@ using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using JwtAuthApi.Models;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-var conn = builder.Configuration.GetConnectionString("EnterpriseConnection");
+//var conn = builder.Configuration.GetConnectionString("EnterpriseConnection");
 var config = builder.Configuration;
+config.SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+if (builder.Environment.IsProduction())
+{
+    var keyVaultUrl = builder.Configuration["keyVaultUrl"] ?? "https://bmas-app-keyvault.vault.azure.net/";
+    builder.Configuration.AddAzureKeyVault(
+       new Uri(keyVaultUrl),
+       new DefaultAzureCredential());
+}
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
-builder.Services.AddDbContext<EnterpriseContext>(opts => opts.UseSqlServer(conn));
+builder.Services.AddDbContext<EnterpriseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EnterpriseConnection")));
 
 builder.Services.AddCors(options =>
 {
