@@ -35,10 +35,18 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         builder =>
         {
-            builder.WithOrigins("https://zealous-flower-0a09e880f.6.azurestaticapps.net")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            var allowedOrigins = new List<string>();
+            //production URL
+            allowedOrigins.Add("https://zealous-flower-0a09e880f.6.azurestaticapps.net");
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                allowedOrigins.Add("http://localhost:3000");
+            }
+
+            builder.WithOrigins(allowedOrigins.ToArray())
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials();
         });
 });
 builder.Services.AddAuthentication(Options => 
@@ -97,8 +105,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+    app.UseHttpsRedirection();
 
-app.UseHttpsRedirection();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
