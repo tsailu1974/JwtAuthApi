@@ -28,7 +28,16 @@ if (builder.Environment.IsProduction())
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 builder.Services.AddDbContext<EnterpriseContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EnterpriseConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EnterpriseConnection"),
+    
+    sqlServerOptionsAction: sqloptions =>
+    {
+        sqloptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null
+            );
+    }));
 
 builder.Services.AddCors(options =>
 {
