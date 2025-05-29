@@ -26,13 +26,13 @@ public partial class EnterpriseContext : DbContext
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //    => optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Enterprise;Integrated Security=True;TrustServerCertificate=True;");
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Enterprise;Integrated Security=True;TrustServerCertificate=True;");
-        }
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    if (!optionsBuilder.IsConfigured)
+    //    {
+    //        optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Enterprise;Integrated Security=True;TrustServerCertificate=True;");
+    //    }
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
